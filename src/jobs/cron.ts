@@ -4,8 +4,11 @@ import { CronJob } from "cron";
 import { update_dns_record } from "../functions/cloudflare/client/update_dns_record";
 import { getIp } from "../functions/getIp";
 import { getIpDns } from "../functions/cloudflare/getIpDns";
+import { sendWebhook } from "../functions/discord/webhook";
 
 import "dotenv/config";
+
+
 
 console.log("Starting DNS update job");
 const job = new CronJob("* * * * *", async () => {
@@ -30,9 +33,11 @@ const job = new CronJob("* * * * *", async () => {
                     );
                 } else {
                     console.log(`DNS record updated successfully!`);
+                    await sendWebhook("UPDATED", {dns_name: name, old_content: content, new_content: ip});
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(`Error updating DNS record: ${error}`);
+                await sendWebhook("ERROR", {dns_name: name, error: error});
             }
         } else {
             console.log("DNS record is up to date");
@@ -44,6 +49,7 @@ const job = new CronJob("* * * * *", async () => {
             );
         } else {
             console.log(`Error getting IP: ${error.message}`);
+            await sendWebhook("ERROR", {error: error});
         }
     }
 });
