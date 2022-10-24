@@ -4,13 +4,15 @@
   "description": "Just something I made because I didn't want to change my DNS settings manually",
   "main": "src/jobs/cron.ts",
   "scripts": {
-    "main": "ts-node src/index.ts",
-    "main-nodemon": "nodemon --exec ts-node src/index.ts",
+    "main": "ts-node src/cron.ts",
+    "main-nodemon": "nodemon --exec ts-node src/cron.ts",
+    "linux": "pm2 start src/cron.ts",
     "ip": "ts-node src/functions/getIp.ts",
     "ncu": "ncu -u",
     "getdns": "ts-node src/functions/cloudflare/getIpDns.ts",
     "updatedns": "ts-node src/functions/cloudflare/client/update_dns_record.ts",
-    "cron": "ts-node src/jobs/cron.ts"
+    "cron": "ts-node src/jobs/cron.ts",
+    "postinstall": "$(yarn bin)/pm2 install typescript"
   },
   "keywords": [],
   "author": "Tockawa",
