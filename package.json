@@ -12,7 +12,7 @@
     "getdns": "ts-node src/functions/cloudflare/getIpDns.ts",
     "updatedns": "ts-node src/functions/cloudflare/client/update_dns_record.ts",
     "cron": "ts-node src/jobs/cron.ts",
-    "postinstall": "$(yarn bin)/pm2 install typescript"
+    "postinstall": "$(npm bin)/pm2 install typescript"
   },
   "keywords": [],
   "author": "Tockawa",
