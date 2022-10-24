@@ -43,6 +43,6 @@ To run this project, you'll need a dotenv file (.env) in your root directory wit
 
 ## Roadmap
 
-- [] Create some sort of messaging system where it'll send you a notification when it updates the DNS. Presumably, this is going to be made using the Discord API.
-- [] Give it a better error handling.
+- [ ] Create some sort of messaging system where it'll send you a notification when it updates the DNS. Presumably, this is going to be made using the Discord API.
+- [ ] Give it a better error handling.
 - [X] Idk?
