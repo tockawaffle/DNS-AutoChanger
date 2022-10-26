@@ -1,4 +1,3 @@
-//await update_dns_record(process.env.CF_ZONE_ID as string,"e29b7711942a126a6798cfc5ea11c37e", "A", "ip.guarufix.com", "200.200.200.200", 1, false)
 import { CronJob } from "cron";
 
 import { update_dns_record } from "../functions/cloudflare/client/update_dns_record";
@@ -8,10 +7,8 @@ import { sendWebhook } from "../functions/discord/webhook";
 
 import "dotenv/config";
 
-
-
 console.log("Starting DNS update job");
-const job = new CronJob("* * * * *", async () => {
+const job = new CronJob("0 * * * *", async () => {
     try {
         const ip = await getIp();
         const { id, name, type, content, proxied, ttl, zone_id } =
@@ -32,15 +29,25 @@ const job = new CronJob("* * * * *", async () => {
                         `Error updating DNS record: ${response.data.errors[0].message}`
                     );
                 } else {
-                    console.log(`DNS record updated successfully!`);
-                    await sendWebhook("UPDATED", {dns_name: name, old_content: content, new_content: ip});
+                    console.log(
+                        `The DNS Record ${name} was updated at ${new Date().toLocaleString()}!`
+                    );
+                    if (!process.env.DISCORD_WEBHOOK) return;
+                    await sendWebhook("UPDATED", {
+                        dns_name: name,
+                        old_content: content,
+                        new_content: ip,
+                    });
                 }
             } catch (error: any) {
                 console.log(`Error updating DNS record: ${error}`);
-                await sendWebhook("ERROR", {dns_name: name, error: error});
+                if (!process.env.DISCORD_WEBHOOK) return;
+                await sendWebhook("ERROR", { dns_name: name, error: error });
             }
         } else {
-            console.log("DNS record is up to date");
+            console.log(
+                `DNS record is up to date as of ${new Date().toLocaleString()}`
+            );
         }
     } catch (error: any) {
         if (error.message.includes("ENOTFOUND")) {
@@ -48,8 +55,8 @@ const job = new CronJob("* * * * *", async () => {
                 "Error getting IP: You might be offline, retrying next minute"
             );
         } else {
-            console.log(`Error getting IP: ${error.message}`);
-            await sendWebhook("ERROR", {error: error});
+            console.log(`Something went wrong: ${error.message}\nFull error: ${error}`);
+            await sendWebhook("ERROR", { error: error });
         }
     }
 });

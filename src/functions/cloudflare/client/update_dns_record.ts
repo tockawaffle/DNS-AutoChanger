@@ -15,7 +15,7 @@ export async function update_dns_record(
         CF_MAIL = process.env.CF_MAIL,
         response = await axios({
             method: "put",
-            url: url,
+            url,
             headers: {
                 "X-Auth-Email": CF_MAIL,
                 "X-Auth-Key": CF_KEY,
