@@ -48,10 +48,15 @@ Needed: !
 `WEBHOOK_NAME` *
 
 CF_MAIL: Your cloudflare e-mail
+
 CF_KEY: Your cloudflare API key
+
 CF_ZONE_ID: The id of your DNS zone
+
 DNS_NAME: The name you're using for the DNS
+
 DISCORD_WEBHOOK: This one's optional, you don't have to use it if you don't want to, but if you want to get notified when the DNS you want to change, actually changes, you'll need to use this env. You'll need an Discord Webhook URL
+
 WEBHOOK_NAME: You'll only use this one if you have a webhook setup
 
 
