@@ -7,7 +7,7 @@ import { sendWebhook } from "../functions/discord/webhook";
 
 import "dotenv/config";
 
-console.log("Starting DNS update job");
+console.log("[CronJob] > Starting DNS update job");
 const job = new CronJob("0 * * * *", async () => {
     try {
         const ip = await getIp();
@@ -26,36 +26,37 @@ const job = new CronJob("0 * * * *", async () => {
                 );
                 if (response.data.success !== true) {
                     console.log(
-                        `Error updating DNS record: ${response.data.errors[0].message}`
+                        `[CronJob] > Error updating DNS record: ${response.data.errors[0].message}`
                     );
                 } else {
                     console.log(
-                        `The DNS Record ${name} was updated at ${new Date().toLocaleString()}!`
+                        `[CronJob] > The DNS Record ${name} was updated at ${new Date().toLocaleString()}!`
                     );
-                    if (!process.env.DISCORD_WEBHOOK) return;
-                    await sendWebhook("UPDATED", {
-                        dns_name: name,
-                        old_content: content,
-                        new_content: ip,
-                    });
+                    if (process.env.DISCORD_WEBHOOK_URL) {
+                        return await sendWebhook("UPDATED", {
+                            dns_name: name,
+                            old_content: content,
+                            new_content: ip,
+                        });
+                    }
                 }
             } catch (error: any) {
-                console.log(`Error updating DNS record: ${error}`);
+                console.log(`[CronJob] > Error updating DNS record: ${error}`);
                 if (!process.env.DISCORD_WEBHOOK) return;
                 await sendWebhook("ERROR", { dns_name: name, error: error });
             }
         } else {
             console.log(
-                `DNS record is up to date as of ${new Date().toLocaleString()}`
+                `[CronJob] > DNS record is up to date as of ${new Date().toLocaleString()}`
             );
         }
     } catch (error: any) {
         if (error.message.includes("ENOTFOUND")) {
             console.log(
-                "Error getting IP: You might be offline, retrying next minute"
+                "[CronJob] > Error getting IP: You might be offline, retrying next minute"
             );
         } else {
-            console.log(`Something went wrong: ${error.message}\nFull error: ${error}`);
+            console.log(`[CronJob] > Something went wrong: ${error.message}\nFull error: ${error}`);
             await sendWebhook("ERROR", { error: error });
         }
     }
