@@ -1,7 +1,9 @@
+import "dotenv/config";
+
 module.exports = {
     apps: [
         {
-            name: 'DNS Auto Updater',
+            name: 'DNS-Auto-Updater',
             script: 'dist/handler.js',
             instances: 1,
             autorestart: true,
