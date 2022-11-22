@@ -50,7 +50,7 @@ if (BOT !== "yes" && WEBHOOK !== "yes") {
 
     console.log("\n[HANDLER] > \x1b[32m%s\x1b[0m", "Starting the bot...\n");
     //@ts-ignore
-    import("./dist/bot/src/bot.js");
+    import("./dist/src/bot/src/bot.js");
 } else if (WEBHOOK === "yes") {
     const webhookEnvs = [
         process.env.DISCORD_WEBHOOK ? null : "DISCORD_WEBHOOK",

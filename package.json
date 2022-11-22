@@ -5,7 +5,7 @@
   "main": "handler.ts",
   "scripts": {
     "postinstall": "npm install -g typescript ts-node && npm run build && npm start",
-    "start": "sudo pm2 start ./dist/ecosystem.config.js --env production",
+    "start": "sudo pm2 start ./dist/handler.js --name dns-autochanger --watch",
     "build": "tsc --skipLibCheck"
   },
   "keywords": [],
