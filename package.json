@@ -4,7 +4,9 @@
   "description": "Just something I made because I didn't want to change my DNS settings manually",
   "main": "handler.ts",
   "scripts": {
-    "start": "npm run build && nodemon dist/handler.js --watch * --ext ts,js,json",
+    "postinstall": "npm install -g typescript ts-node && npm run build",
+    "prestart": "npm run dist/handler.js",
+    "start": "pm2 start ./dist/ecosystem.config.js --env production",
     "build": "tsc --skipLibCheck"
   },
   "keywords": [],

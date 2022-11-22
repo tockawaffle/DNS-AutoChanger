@@ -1,4 +1,5 @@
 import { connect, ConnectOptions } from "mongoose";
+import { createCronSchema } from "../commands/enableJob";
 export async function connectMongoDB(): Promise<void> {
     await connect(process.env.MONGODB_URI!, {
         keepAlive: true,
@@ -9,4 +10,5 @@ export async function connectMongoDB(): Promise<void> {
     }).catch((err) => {
         console.log(`[Mongoose] > Error while connecting to the db: ${err}`);
     })
+    await createCronSchema();
 }

@@ -43,9 +43,25 @@ Needed: !
 
 `DNS_NAME` !
 
-`DISCORD_WEBHOOK` *
+`DISCORD_BOT` *!
 
+`BOT_TOKEN` *!
+
+`SERVER_ID` *!
+
+`LOG_CHANNEL_ID` *!
+
+`CLIENT_ID` *!
+
+`OWNER_ID` *!
+
+`MONGODB_URI` *!
+
+`DISCORD_WEBHOOK_URL` *
 `WEBHOOK_NAME` *
+
+
+### Envs that you'll absolutely need for this to work:
 
 CF_MAIL: Your cloudflare e-mail
 
@@ -55,7 +71,25 @@ CF_ZONE_ID: The id of your DNS zone
 
 DNS_NAME: The name you're using for the DNS
 
-DISCORD_WEBHOOK: This one's optional, you don't have to use it if you don't want to, but if you want to get notified when the DNS you want to change, actually changes, you'll need to use this env. You'll need an Discord Webhook URL
+### Envs for the Discord Bot:
+
+DISCORD_BOT: "yes" or "no", you'll use "no" or leave it blank if you're not using it as a Discord Bot
+
+BOT_TOKEN: The discord bot's token. You can get it at: https://discord.com/developers/applications 
+
+SERVER_ID: Your server's id
+
+LOG_CHANNEL_ID: The channel that'll be used as log
+
+CLIENT_ID: The bot's ID
+
+OWNER_ID: Your id
+
+MONGODB_URI: The mongoDB URI that you'll use as database, you can use this one as local: mongodb://localhost:27017/dns
+
+### Envs for the Discord Webhook:
+
+DISCORD_WEBHOOK_URL: This one's optional, you don't have to use it if you don't want to, but if you want to get notified when the DNS you want to change, actually changes, you'll need to use this env. You'll need an Discord Webhook URL
 
 WEBHOOK_NAME: You'll only use this one if you have a webhook setup
 

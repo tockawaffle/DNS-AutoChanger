@@ -1,13 +1,13 @@
 import { CommandObject, CommandType } from "wokcommands";
-import { cloudflare_updater } from "../../configs/functions/cloudflare";
 import { enableJob } from "../../configs/commands/enableJob";
-import jobSchema from "../../configs/db/schemas/jobSchema";
 import {
     User,
     CommandInteraction,
     GuildMember,
     PermissionsBitField,
+    Client,
 } from "discord.js";
+
 export default {
     description: "Enables a job from the /jobs list.",
     type: CommandType.SLASH,
@@ -49,20 +49,24 @@ export default {
     ],
     ownerOnly: true,
     callback: async ({
+        client,
         args,
         interaction,
     }: {
+        client: Client;
         args: string[];
         interaction: CommandInteraction;
     }) => {
         const jobName = args[0] as "cloudflare" | "proxmox";
         const jobStatus = args[1] as "online" | "offline";
-        console.log(jobName, jobStatus);
         switch(jobName) {
             case "cloudflare": {
-                if (jobStatus === "online") {
-                    await enableJob(jobName, jobStatus);
-                }
+                const upd = await enableJob("cloudflare_updater", jobStatus, client);
+                return interaction.reply(upd)
+            }
+            case "proxmox": {
+                const upd = await enableJob("proxmox_updater", jobStatus, client);
+                return interaction.reply(upd);
             }
         }
 

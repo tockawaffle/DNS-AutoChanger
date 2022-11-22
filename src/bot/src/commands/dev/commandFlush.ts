@@ -34,12 +34,10 @@ export default {
         const commandId = args[0] as string;
         if (!commandId) {
             await rest.put(
-                Routes.applicationCommands(
-                    process.env.CLIENT_ID as string,
-                ),
+                Routes.applicationCommands(process.env.CLIENT_ID as string),
                 { body: [] }
             );
-            return "Successfully deleted all commands.";
+            return "Successfully deleted all commands, you should restart the bot so the actual commands you have will be integrated again.";
         } else {
             await rest.delete(
                 Routes.applicationGuildCommand(
