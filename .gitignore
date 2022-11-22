@@ -1,3 +1,6 @@
 node_modules
 .env
 dist
+
+# Do not ignore the wokcommand dist folder at src\bot\modules\wokcommands\dist
+!src/bot/modules/wokcommands/dist
