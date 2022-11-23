@@ -1,12 +1,6 @@
 import { CommandObject, CommandType } from "wokcommands";
 import { enableJob } from "../../configs/commands/enableJob";
-import {
-    User,
-    CommandInteraction,
-    GuildMember,
-    PermissionsBitField,
-    Client,
-} from "discord.js";
+import { CommandInteraction, Client } from "discord.js";
 
 export default {
     description: "Enables a job from the /jobs list.",
@@ -59,16 +53,23 @@ export default {
     }) => {
         const jobName = args[0] as "cloudflare" | "proxmox";
         const jobStatus = args[1] as "online" | "offline";
-        switch(jobName) {
+        switch (jobName) {
             case "cloudflare": {
-                const upd = await enableJob("cloudflare_updater", jobStatus, client);
-                return interaction.reply(upd)
+                const upd = await enableJob(
+                    "cloudflare_updater",
+                    jobStatus,
+                    client
+                );
+                return interaction.reply(upd);
             }
             case "proxmox": {
-                const upd = await enableJob("proxmox_updater", jobStatus, client);
+                const upd = await enableJob(
+                    "proxmox_updater",
+                    jobStatus,
+                    client
+                );
                 return interaction.reply(upd);
             }
         }
-
     },
 } as CommandObject;

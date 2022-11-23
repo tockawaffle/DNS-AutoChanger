@@ -1,8 +1,8 @@
 import {update_dns_record} from "../../../../functions/cloudflare/client/update_dns_record";
-import { dns_records } from "../../../../functions/cloudflare/client/dns_records";
 import { CronJob } from "cron";
 import { getIpDns } from "../../../../functions/cloudflare/getIpDns";
 import { getIp } from "../../../../functions/getIp";
+import { proxmoxJob } from "./proxmox";
 import { Client, EmbedBuilder, GuildChannel, TextChannel } from "discord.js";
 import jobSchema from "../db/schemas/jobSchema";
 
@@ -18,18 +18,26 @@ export async function cfJob(client: Client) {
                     return channel.send({
                         embeds: [
                             new EmbedBuilder({
+                                author: {
+                                    name: client.user!.username,
+                                    iconURL: client.user!.displayAvatarURL()
+                                },
                                 title: `**Error updating DNS record:** ${name}`,
                                 description: response.data.errors[0].message,
-                            }).setColor("Red")
+                            }).setColor("Red").setImage("https://preview.redd.it/qlbz5kaucva51.jpg?auto=webp&s=36752e06b38e90bfd94ca0186163dbd338a4d7e5")
                         ]
                     })
                 } else {
                     return channel.send({
                         embeds: [
                             new EmbedBuilder({
+                                author: {
+                                    name: client.user!.username,
+                                    iconURL: client.user!.displayAvatarURL()
+                                },
                                 title: `**DNS Record ${name} was updated!**`,
                                 description: `Old IP: ${content}\nNew IP: ${ip}`,
-                            }).setColor("Green")
+                            }).setColor("Green").setImage("https://preview.redd.it/qlbz5kaucva51.jpg?auto=webp&s=36752e06b38e90bfd94ca0186163dbd338a4d7e5")
                         ]
                     })
                 }
@@ -40,9 +48,13 @@ export async function cfJob(client: Client) {
             return channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        title: `**DNS record is up to date as of ${new Date().toLocaleString()}**`,
-                        description: `No changes made!`,
-                    }).setColor("Random")
+                        author: {
+                            name: client.user!.username,
+                            iconURL: client.user!.displayAvatarURL()
+                        },
+                        title: `**DNS Record:**`,
+                        description: `The record ${name} is up to date (As of ${new Date().toLocaleString()})\nNo changes made!`,
+                    }).setColor("Random").setImage("https://preview.redd.it/qlbz5kaucva51.jpg?auto=webp&s=36752e06b38e90bfd94ca0186163dbd338a4d7e5")
                 ]
             })
         }
@@ -60,5 +72,15 @@ export async function startJobOnInit(client: Client) {
         const cJob = await cfJob(client);
         cJob.stop();
         console.log(`[Cron] > Job "cloudflare_updater" is disabled.`);
+    }
+
+    if(job!.proxmox_updater === true) {
+        const pJob = await proxmoxJob(client);
+        console.log(`[Cron] > Starting job "proxmox_updater"`);
+        // pJob.start();
+    } else {
+        const pJob = await proxmoxJob(client);
+        // pJob.stop();
+        console.log(`[Cron] > Job "proxmox_updater" is disabled.`);
     }
 }

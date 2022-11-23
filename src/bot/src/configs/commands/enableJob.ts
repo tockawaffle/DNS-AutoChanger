@@ -3,9 +3,7 @@ import jobSchema from "../db/schemas/jobSchema";
 import { cfJob } from "../functions/cloudflare";
 
 export async function enableJob(jobName: string, jobStatus: string, client: Client) {
-    console.log(jobName)
     const job = await jobSchema.findOne({ _id: "cron", },);
-    console.log(job);
 
     let status: boolean;
     if (jobStatus === "online") status = true;
