@@ -76,11 +76,11 @@ export async function startJobOnInit(client: Client) {
 
     if(job!.proxmox_updater === true) {
         const pJob = await proxmoxJob(client);
+        pJob.start();
         console.log(`[Cron] > Starting job "proxmox_updater"`);
-        // pJob.start();
     } else {
         const pJob = await proxmoxJob(client);
-        // pJob.stop();
+        pJob.stop();
         console.log(`[Cron] > Job "proxmox_updater" is disabled.`);
     }
 }
