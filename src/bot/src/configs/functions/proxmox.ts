@@ -1,6 +1,6 @@
 import proxmoxApi, { ProxmoxEngine } from "proxmox-api";
 import { Client, EmbedBuilder, GuildChannel, TextChannel } from "discord.js";
-import { getIp } from "../../../../functions/getIp";
+import { getPublicIp } from "../../../../functions/getPublicIp";
 import { CronJob } from "cron";
 
 export function connectProxmox() {
@@ -24,12 +24,12 @@ export async function getProxmoxDNS(client: Client) {
     return dns
 }
 
-export async function proxmoxJob(client: Client) {
-    const ip = await getIp()
+export async function proxmoxJobDiscord(client: Client) {
+    const ip = await getPublicIp()
     const {search, dns1} = await getProxmoxDNS(client)
     const nodes = await getProxmoxNode(client)
     const channel = client.guilds.cache.get(process.env.SERVER_ID as string)?.channels.cache.get(process.env.LOG_CHANNEL_ID as string) as GuildChannel as TextChannel
-    const proxmoxJob = new CronJob("*/30 * * * *", async() => {
+    const proxmoxJob = new CronJob("*/2 * * * *", async() => {
         if(ip !== dns1) {
             try {
                 await client.proxmox.nodes.$(nodes[0].node).dns.$put({
@@ -62,19 +62,43 @@ export async function proxmoxJob(client: Client) {
                     ]
                 })
             }
+        }
+    })
+    return proxmoxJob
+}
+
+export async function proxmoxJob() {
+    const ip = await getPublicIp()
+    const proxmox = connectProxmox()
+
+    const nodes = await proxmox.nodes.$get()
+    const {search, dns1} = await proxmox.nodes.$(nodes[0].node).dns.$get()
+
+    const proxmoxJob = new CronJob("*/30 * * * *", async() => {
+        if(ip !== dns1) {
+            try {
+                await proxmox.nodes.$(nodes[0].node).dns.$put({
+                    dns1: ip,
+                    search: search as string
+                })
+                console.log(`Proxmox DNS record updated!`)
+                return {
+                    status: "success",
+                    message: `Proxmox DNS record updated!`
+                }
+            } catch (error: any) {
+                console.log(`Error updating DNS record: ${error.message}`)
+                return {
+                    status: "error",
+                    message: error.message
+                }
+            }
         } else {
-            return channel.send({
-                embeds: [
-                    new EmbedBuilder({
-                        author: {
-                            name: client.user!.username,
-                            iconURL: client.user!.displayAvatarURL()
-                        },
-                        title: `**Proxmox DNS Record!**`,
-                        description: `The DNS record is up to date as of ${new Date().toLocaleString()}`,
-                    }).setColor("Red").setImage("https://preview.redd.it/qlbz5kaucva51.jpg?auto=webp&s=36752e06b38e90bfd94ca0186163dbd338a4d7e5")
-                ]
-            })
+            console.log(`Proxmox DNS record is up to date as of ${new Date().toLocaleString()}`)
+            return {
+                status: "no diff",
+                message: `Proxmox DNS record is up to date as of ${new Date().toLocaleString()}`
+            }
         }
     })
     return proxmoxJob
