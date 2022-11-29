@@ -8,8 +8,6 @@ import WOK from "wokcommands";
 
 export const client = new Client(clientOptions); wokOptions.client=client;
 
-import {getProxmoxDNS} from "./configs/functions/proxmox";
-
 (async () => {
     await connectMongoDB();
     client.on("ready", async () => {

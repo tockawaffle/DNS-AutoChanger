@@ -2,7 +2,7 @@
   "name": "dns-autochanger",
   "version": "1.4.0",
   "description": "Just something I made because I didn't want to change my DNS settings manually",
-  "main": "dist/src/bot/src/bot.js",
+  "main": "dist/handler.js",
   "scripts": {
     "postinstall": "npm install -g typescript ts-node && npm run build && npm start",
     "start": "sudo pm2 start ./dist/handler.js --name dns-autochanger --watch",

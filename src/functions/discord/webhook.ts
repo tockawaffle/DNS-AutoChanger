@@ -44,7 +44,5 @@ export async function sendWebhook(type: "UPDATED" | "ERROR", data: {dns_name?: s
             `Error sending webhook: ${error}`
         )
     }
-
-    
 }
 

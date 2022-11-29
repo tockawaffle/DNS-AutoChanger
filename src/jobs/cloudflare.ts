@@ -1,7 +1,7 @@
 import { CronJob } from "cron";
 
 import { update_dns_record } from "../functions/cloudflare/client/update_dns_record";
-import { getIp } from "../functions/getIp";
+import { getPublicIp } from "../functions/getPublicIp";
 import { getIpDns } from "../functions/cloudflare/getIpDns";
 import { sendWebhook } from "../functions/discord/webhook";
 
@@ -10,7 +10,7 @@ import "dotenv/config";
 console.log("[CronJob] > Starting DNS update job");
 const job = new CronJob("0 * * * *", async () => {
     try {
-        const ip = await getIp();
+        const ip = await getPublicIp();
         const { id, name, type, content, proxied, ttl, zone_id } =
             await getIpDns(process.env.DNS_NAME as string);
         if (content !== ip) {
@@ -37,13 +37,17 @@ const job = new CronJob("0 * * * *", async () => {
                             dns_name: name,
                             old_content: content,
                             new_content: ip,
+                        }).then(() => {
+                            console.log(`[Webhook - Cloudflare] > Sent "UPDATED" webhook to Discord!`);
                         });
                     }
                 }
             } catch (error: any) {
                 console.log(`[CronJob] > Error updating DNS record: ${error}`);
                 if (!process.env.DISCORD_WEBHOOK) return;
-                await sendWebhook("ERROR", { dns_name: name, error: error });
+                await sendWebhook("ERROR", { dns_name: name, error: error }).then(() => {
+                    console.log(`[Webhook - Cloudflare] > Sent "ERROR" webhook to Discord!`);
+                });
             }
         } else {
             console.log(
@@ -56,8 +60,12 @@ const job = new CronJob("0 * * * *", async () => {
                 "[CronJob] > Error getting IP: You might be offline, retrying next minute"
             );
         } else {
-            console.log(`[CronJob] > Something went wrong: ${error.message}\nFull error: ${error}`);
-            await sendWebhook("ERROR", { error: error });
+            console.log(
+                `[CronJob] > Something went wrong: ${error.message}\nFull error: ${error}`
+            );
+            await sendWebhook("ERROR", { error: error }).then(() => {
+                console.log(`[Webhook - Cloudflare] > Sent "ERROR" webhook to Discord!`);
+            });
         }
     }
 });

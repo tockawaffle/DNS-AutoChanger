@@ -4,9 +4,17 @@
 Well, this might seem something rather useless if you have a fixed IP address.
 If you don't, then this might actually help someone in the future.
 
-This script is quite simple, it doesn't really handle all errors that could happen, but it works the way it's supposed to.
+This script is quite simple, it doesn't really handle all errors that could happen, but it works the way it's supposed to (Most of the times).
 
+## Disclaimer
 
+License can be found at the root directory of this project.
+
+I am not responsible for how you'll use this or how you'll modify it.
+
+The startup commands are mainly for linux machines (tested with CentOS 7). It'll use PM2 to manage it, you can see if this is working by using the command "pm2 list" with sudo permissions.
+
+You'll also need typescript, ts-node and obviously, NodeJS v16 installed globally.
 
 ## FAQ
 
@@ -30,37 +38,6 @@ This won't be noticed by anyone, so I'm not going to make a detailed wiki on it.
 
 ## Environment Variables
 
-To run this project, you'll need a dotenv file (.env) in your root directory with the following envs:
-
-Optional: *
-Needed: !
-
-`CF_MAIL` !
- 
-`CF_KEY` !
-
-`CF_ZONE_ID` !
-
-`DNS_NAME` !
-
-`DISCORD_BOT` *!
-
-`BOT_TOKEN` *!
-
-`SERVER_ID` *!
-
-`LOG_CHANNEL_ID` *!
-
-`CLIENT_ID` *!
-
-`OWNER_ID` *!
-
-`MONGODB_URI` *!
-
-`DISCORD_WEBHOOK_URL` *
-`WEBHOOK_NAME` *
-
-
 ### Envs that you'll absolutely need for this to work:
 
 CF_MAIL: Your cloudflare e-mail
@@ -70,6 +47,8 @@ CF_KEY: Your cloudflare API key
 CF_ZONE_ID: The id of your DNS zone
 
 DNS_NAME: The name you're using for the DNS
+
+PROXMOX_ENABLE: "yes" or "no", not needed if you're going to use it as a Discord Bot
 
 ### Envs for the Discord Bot:
 
@@ -87,15 +66,24 @@ OWNER_ID: Your id
 
 MONGODB_URI: The mongoDB URI that you'll use as database, you can use this one as local: mongodb://localhost:27017/dns
 
+### Envs for Proxmox
+
+PROXMOX_HOST: Your FQDN or IP that you use with your proxmox.
+
+PROXMOX_TOKEN_ID: Your Proxmox API Token ID
+
+PROXMOX_TOKEN_SECRET: Your Proxmox API Token Secret
+
 ### Envs for the Discord Webhook:
 
 DISCORD_WEBHOOK_URL: This one's optional, you don't have to use it if you don't want to, but if you want to get notified when the DNS you want to change, actually changes, you'll need to use this env. You'll need an Discord Webhook URL
 
 WEBHOOK_NAME: You'll only use this one if you have a webhook setup
 
-
 ## Roadmap
 
 - [X] Create some sort of messaging system where it'll send you a notification when it updates the DNS. Presumably, this is going to be made using the Discord API.
 - [ ] Give it a better error handling.
+- [ ] Custom timing for the CronJobs (The user will be able to choose between default set of timings or use a custom one for each job)
+- [ ] Give more options of notifications, such as Telegram, WhatsApp and etc.
 - [X] Idk?
